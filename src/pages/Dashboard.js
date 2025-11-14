@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { motion } from 'framer-motion';
-import { Users, Package, TrendingUp, DollarSign, Star, Award, RefreshCw } from 'lucide-react';
+import { Users, Package, DollarSign, Star, Award, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const Dashboard = () => {

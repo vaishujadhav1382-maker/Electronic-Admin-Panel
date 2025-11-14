@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const { darkMode, setDarkMode, currentUser, logout } = useApp();
+  const { darkMode, setDarkMode, logout } = useApp();
   const navigate = useNavigate();
 
   const handleLogout = (e) => {

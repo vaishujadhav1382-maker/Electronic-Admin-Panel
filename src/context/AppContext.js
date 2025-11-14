@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, writeBatch, setDoc, collectionGroup, query, where, deleteField } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, writeBatch, setDoc, collectionGroup, deleteField } from 'firebase/firestore';
 
 const AppContext = createContext();
 
@@ -401,15 +401,6 @@ export const AppProvider = ({ children }) => {
 
       const companyRef = doc(collection(db, 'admin-data', 'root', 'products'), company);
       const batch = writeBatch(db);
-
-      // Delete categories, their subcategories, and products
-      const categoriesSnap = await getDocs(collection(companyRef, 'categories'));
-      categoriesSnap.forEach((catDoc) => {
-        const categoryRef = catDoc.ref;
-        
-        // Subcategories under this category
-        // Note: nested async loops avoided; we just enqueue deletes in this batch
-      });
 
       // Since Firestore batches are limited, perform a full recursive deletion with fresh snapshots
       const categoriesSnap2 = await getDocs(collection(companyRef, 'categories'));

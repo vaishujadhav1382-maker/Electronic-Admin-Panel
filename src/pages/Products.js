@@ -5,12 +5,18 @@ import { Plus, Search, Edit2, Trash2, X, Upload, Grid, List, Star, RefreshCw, Pa
 import * as XLSX from 'xlsx';
 
 const Products = () => {
-  const { products, productsLoading, productsError, addProduct, updateProduct, deleteProduct, deleteAllProducts, importProductsFromExcel, companies, categories, subcategories, fetchProducts } = useApp();
+  const { products, productsLoading, productsError, addProduct, updateProduct, deleteProduct, importProductsFromExcel, companies, categories, subcategories, fetchProducts } = useApp();
   
   // Extra options added from filter '+ Add' items (client-side only)
   const [customCompanies, setCustomCompanies] = useState([]); // string[]
   const [customCategories, setCustomCategories] = useState({}); // { [company]: string[] }
   const [customSubcategories, setCustomSubcategories] = useState({}); // { `${company}|${category}`: string[] }
+
+  const [filters, setFilters] = useState({
+    company: '',
+    category: '',
+    subcategory: ''
+  });
 
   // Create dynamic filter options based on products + custom values
   const availableCompanies = useMemo(() => {
@@ -63,12 +69,6 @@ const Products = () => {
     price: '',
     minPrice: '',
     incentive: '',
-  });
-
-  const [filters, setFilters] = useState({
-    company: '',
-    category: '',
-    subcategory: ''
   });
 
   // Handlers for '+ Add' options inside selects
@@ -224,17 +224,6 @@ const Products = () => {
         await deleteProduct(id);
       } catch (err) {
         alert('Error deleting product. Please try again.');
-      }
-    }
-  };
-
-  const handleDeleteAll = async () => {
-    if (window.confirm(`Are you sure you want to delete ALL ${products.length} products? This action cannot be undone!`)) {
-      try {
-        await deleteAllProducts();
-        alert('All products have been deleted successfully!');
-      } catch (err) {
-        alert('Error deleting all products. Please try again.');
       }
     }
   };

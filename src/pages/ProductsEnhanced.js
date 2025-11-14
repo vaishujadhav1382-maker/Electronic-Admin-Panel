@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Upload, Star, TrendingDown, Award, DollarSign, Package as PackageIcon, X, Edit2, Trash2, RefreshCw, Download } from 'lucide-react';
+import { Plus, Upload, TrendingDown, Award, DollarSign, Package as PackageIcon, X, Edit2, Trash2, RefreshCw, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 const ProductsEnhanced = () => {
@@ -375,13 +375,6 @@ const ProductsEnhanced = () => {
     }
   };
 
-  const handleDeleteAll = () => {
-    if (window.confirm(`Are you sure you want to delete ALL ${products.length} products? This action cannot be undone!`)) {
-      deleteAllProducts();
-      alert('All products have been deleted successfully!');
-    }
-  };
-
   const handleExcelUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -392,20 +385,7 @@ const ProductsEnhanced = () => {
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
-        
-        // Category-specific placeholder images
-        const getCategoryImage = (category) => {
-          const imageMap = {
-            'Air Conditioner': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400',
-            'Refrigerator': 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400',
-            'Washing Machine': 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400',
-            'TV': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400',
-            'Microwave': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400',
-            'Dishwasher': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400',
-          };
-          return imageMap[category] || 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400';
-        };
-        
+
         // Helper function to find column value with multiple possible names
         const findValue = (row, possibleNames) => {
           for (const name of possibleNames) {
