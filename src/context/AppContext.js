@@ -128,12 +128,37 @@ export const AppProvider = ({ children }) => {
       const querySnapshot = await getDocs(collectionGroup(db, 'products'));
       const productsData = [];
       querySnapshot.forEach((snap) => {
-        const data = snap.data();
+        const data = snap.data() || {};
+
+        // Normalize fields so UI can always use name and minPrice
+        const rawPrice =
+          typeof data.price === 'number'
+            ? data.price
+            : typeof data.productPrice === 'number'
+              ? data.productPrice
+              : 0;
+
+        const rawMinPrice =
+          typeof data.minPrice === 'number'
+            ? data.minPrice
+            : typeof data.bottomPrice === 'number'
+              ? data.bottomPrice
+              : 0;
+
+        const normalizedName = data.name || data.productName || '';
+
+        const discount = rawPrice && rawMinPrice
+          ? ((rawPrice - rawMinPrice) / rawPrice * 100)
+          : 0;
+
         productsData.push({
           id: snap.id,
           path: snap.ref.path,
           ...data,
-          discount: data.price && data.minPrice ? ((data.price - data.minPrice) / data.price * 100) : 0
+          name: normalizedName,
+          price: rawPrice,
+          minPrice: rawMinPrice,
+          discount,
         });
       });
       const leafOnly = productsData.filter(p =>
@@ -272,13 +297,16 @@ export const AppProvider = ({ children }) => {
     try {
       setProductsLoading(true);
       setProductsError(null);
-      const discount = ((product.price - product.minPrice) / product.price * 100).toFixed(2);
+
+      // Store only legacy Firestore fields; UI will normalize on read
       const productData = {
-        ...product,
-        // keep both naming schemes for compatibility
         productName: product.name,
         bottomPrice: product.minPrice,
-        discount: parseFloat(discount),
+        price: product.price,
+        company: product.company,
+        category: product.category,
+        subcategory: product.subcategory,
+        incentive: product.incentive,
       };
 
       const company = (product.company || 'Unknown').trim();
@@ -504,15 +532,15 @@ export const AppProvider = ({ children }) => {
         const category = (product.category || 'Unknown').trim();
         const subcategory = (product.subcategory || 'Unknown').trim();
 
-        const discount = product.price && product.minPrice
-          ? ((product.price - product.minPrice) / product.price * 100).toFixed(2)
-          : 0;
-
+        // Store only legacy Firestore fields; UI will normalize on read
         const productData = {
-          ...product,
           productName: product.name,
           bottomPrice: product.minPrice,
-          discount: parseFloat(discount),
+          price: product.price,
+          company: product.company,
+          category: product.category,
+          subcategory: product.subcategory,
+          incentive: product.incentive,
         };
 
         const companyRef = doc(collection(db, 'admin-data', 'root', 'products'), company);

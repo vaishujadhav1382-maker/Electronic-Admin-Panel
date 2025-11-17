@@ -230,6 +230,12 @@ const Products = () => {
 
   const handleRefresh = async () => {
     await fetchProducts();
+    setFilters({ company: '', category: '', subcategory: '' });
+    setCustomCompanies([]);
+    setCustomCategories({});
+    setCustomSubcategories({});
+    setSearchTerm('');
+    setSelectedProducts([]);
   };
 
   // Multi-select functions

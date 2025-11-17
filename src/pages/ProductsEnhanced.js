@@ -28,6 +28,12 @@ const ProductsEnhanced = () => {
   const fileInputRef = useRef(null);
   const handleRefresh = async () => {
     await fetchProducts();
+    setSelectedCompany('');
+    setSelectedCategory('');
+    setSelectedSubcategory('');
+    setCustomCompanies([]);
+    setCustomCategories({});
+    setCustomSubcategories({});
   };
   
   const [formData, setFormData] = useState({
@@ -166,6 +172,21 @@ const ProductsEnhanced = () => {
     if (!ok) return;
     try {
       await deleteCompanyHierarchy(company);
+      setCustomCompanies(prev => prev.filter(c => c !== company));
+      setCustomCategories(prev => {
+        const updated = { ...prev };
+        delete updated[company];
+        return updated;
+      });
+      setCustomSubcategories(prev => {
+        const updated = {};
+        Object.keys(prev).forEach(key => {
+          if (!key.startsWith(company + '|')) {
+            updated[key] = prev[key];
+          }
+        });
+        return updated;
+      });
       if (selectedCompany === company) {
         setSelectedCompany('');
         setSelectedCategory('');
